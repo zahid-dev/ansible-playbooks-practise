@@ -1,0 +1,25 @@
+---
+- hosts: test-servers
+  become: true
+  become_user: root
+  vars:
+    ansible_become_pass: Freya
+  tasks:
+    - name: Install pip
+      apt: name=python-pip state=present
+
+    - name: Install libmysqlclient
+      apt: name=libmysqlclient-dev state=present
+
+    - name: Install the Python MySQLB module
+      pip: name=MYSQL-python
+
+    - name: Create database user zahid
+      mysql_user: user=zahid password=zahid priv=*.*:ALL state=present
+
+    - name: Create database me
+      mysql_db: db=me state=present
+
+    - name: Create a table reg
+      command: mysql -u zahid -pzahid -e 'CREATE TABLE reg (name varchar(30), email varchar(30));' me
+      
